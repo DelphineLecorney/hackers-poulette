@@ -5,12 +5,26 @@ $nameError = $firstnameError = $addressEmailError = $confirmAddressEmailError = 
 
 $name = $firstname = $addressEmail = $confirmAddressEmail = $concerns = $description = '';
 
+if($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if(empty($_POST['name'])) {
+        $nameError = 'Please enter your name';
+    } else if (strlen($_POST['name']) < 2 || strlen($_POST['name']) > 255) {
+        $nameError = 'Your name must be between 2 and 255 characters';
+    } else {
+        $name = checkData($_POST['name']);
+    }
+}
+
+
 function checkData($data) {
     $data = trim($data);
     $data = stripslashes($data);
     $data = htmlspecialchars($data);
     return $data;
-  }
+}
+
+
+
 ?>
 
 <!DOCTYPE html>
