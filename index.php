@@ -5,22 +5,38 @@ $nameError = $firstnameError = $addressEmailError = $confirmAddressEmailError = 
 
 $name = $firstname = $addressEmail = $confirmAddressEmail = $concerns = $description = '';
 
-if($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if(empty($_POST['name'])) {
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (empty($_POST['name'])) {
         $nameError = 'Please enter your name';
-    } else if (strlen($_POST['name']) < 2 || strlen($_POST['name']) > 255) {
+    } elseif (strlen($_POST['name']) < 2 || strlen($_POST['name']) > 255) {
         $nameError = 'Your name must be between 2 and 255 characters';
     } else {
         $name = checkData($_POST['name']);
     }
+
     if (empty($_POST['firstname'])) {
         $firstnameError = 'Please enter your firstname';
-    } else if (strlen($_POST['firstname']) < 2 || strlen($_POST['firstname']) > 255) {
-    $firstnameError = 'Your name must be between 2 and 255 characters';
+    } elseif (strlen($_POST['firstname']) < 2 || strlen($_POST['firstname']) > 255) {
+        $firstnameError = 'Your firstname must be between 2 and 255 characters';
     } else {
-    $firstname = test_input($_POST['firstname']);
+        $firstname = checkData($_POST['firstname']);
     }
-    
+
+    if (empty($_POST['addressEmail'])) {
+        $addressEmailError = 'Please enter your email';
+    } elseif (!filter_var($_POST['addressEmail'], FILTER_VALIDATE_EMAIL)) {
+        $addressEmailError = "Your email format isn't valid";
+    } else {
+        $addressEmail = checkData($_POST['addressEmail']);
+    }
+
+    if (empty($_POST['confirmAddressEmail'])) {
+        $confirmAddressEmailError = 'Please confirm your email';
+    } elseif (!filter_var($_POST['confirmAddressEmail'], FILTER_VALIDATE_EMAIL)) {
+        $confirmAddressEmailError = "Your email format isn't valid";
+    } else {
+        $confirmAddressEmail = checkData($_POST['confirmAddressEmail']);
+    }
 
 }
 
@@ -30,9 +46,6 @@ function checkData($data) {
     $data = htmlspecialchars($data);
     return $data;
 }
-
-
-
 ?>
 
 <!DOCTYPE html>
