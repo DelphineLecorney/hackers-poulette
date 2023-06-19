@@ -32,32 +32,45 @@ include('./assets/php/connect.php');
         <br>
         <div class="form-group">
             <label for="addressEmail">Address e-mail :</label>
-            <input type="text" id="addressEmail" name="addressEmail" value="<?php echo $addressEmail; ?>" required>
+            <input type="email" id="addressEmail" name="addressEmail" value="<?php echo $addressEmail; ?>" required>
             <span class="error"><?php echo $addressEmailError; ?></span>
         </div>
         <br>
         <div class="form-group">
             <label for="confirmAddressEmail">confirmAddressEmail :</label>
-            <input type="text" id="confirmAddressEmail" name="confirmAddressEmail" value="<?php echo $confirmAddressEmail; ?>" required>
+            <input type="email" id="confirmAddressEmail" name="confirmAddressEmail" value="<?php echo $confirmAddressEmail; ?>" required>
             <span class="error"><?php echo $confirmAddressEmailError; ?></span>
         </div>
         <br>
         <div class="form-group">
+            <label for="concerns">Concerns :</label>
+            <select id="concerns" name="concerns" required>
+                <option value="">Select Concern</option>
+                <option value="after-sales-service" <?php if ($concerns === 'after-sales-service') echo 'selected'; ?>>After-sales service</option>
+                <option value="billing" <?php if ($concerns === 'billing') echo 'selected'; ?>>Billing</option>
+                <option value="others" <?php if ($concerns === 'others') echo 'selected'; ?>>Others</option>
+            </select>
+            <span class="error"><?php echo $concernsError; ?></span>
+        </div>
+        <div class="form-group">
             <label for="description">Description :</label>
-            <input type="text" id="description" name="description" value="<?php echo $description; ?>" required>
+            <textarea id="description" name="description" rows="5" cols="40" required><?php echo $description; ?></textarea>
             <span class="error"><?php echo $descriptionError; ?></span>
         </div>
         <br>
         <div class="form-group">
             <label for="file">File :</label>
-            <input type="text" id="file" name="file" value="<?php echo $file; ?>" required>
+            <input type="file" id="file" name="file" value="<?php echo $file; ?>" required>
             <span class="error"><?php echo $fileError; ?></span>
         </div>
         <br>
+
+        <input type="submit" name="submit" value="Submit">
+
     </form>
 
     <footer>
-
+        &copy; <?php echo date("Y"); ?> Hackers Poulette &#8482;
     </footer>
 </body>
 </html>
