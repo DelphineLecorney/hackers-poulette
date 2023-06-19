@@ -37,7 +37,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } else {
         $confirmAddressEmail = checkData($_POST['confirmAddressEmail']);
     }
-
+    if ($addressEmail !== $confirmAddressEmail) {
+        $confirmAddressEmailError = "Email confirmation doesn't match";
+    }
 }
 
 function checkData($data) {
@@ -100,7 +102,7 @@ function checkData($data) {
         <br>
         <div class="form-group">
             <label for="description">Description :</label>
-            <br>
+            <br><br>
             <textarea id="description" name="description" rows="5" cols="40" required><?php echo $description; ?></textarea>
             <span class="error"><?php echo $descriptionError; ?></span>
         </div>
