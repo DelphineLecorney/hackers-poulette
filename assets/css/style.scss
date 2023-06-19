@@ -1,0 +1,30 @@
+@import './reset.css';
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+}
+
+header {
+    background-color: #f2f2f2;
+    padding: 20px;
+    text-align: center;
+}
+
+main {
+    overflow-y: auto;
+}
+
+footer {
+    background-color: #f2f2f2;
+    padding: 20px;
+    position: sticky;
+    bottom: 0;
+    text-align: center;
+}
