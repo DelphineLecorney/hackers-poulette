@@ -1,6 +1,16 @@
 <?php
 include('./assets/php/connect.php');
 
+$nameError = $firstnameError = $addressEmailError = $confirmAddressEmailError = $concernsError = $descriptionError = $fileError = '';
+
+$name = $firstname = $addressEmail = $confirmAddressEmail = $concerns = $description = '';
+
+function checkData($data) {
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data);
+    return $data;
+  }
 ?>
 
 <!DOCTYPE html>
@@ -16,7 +26,7 @@ include('./assets/php/connect.php');
     <h1>Contact form</h1>
     </header>
 
-    <form id="AddData" method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+    <form id="AddData" method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" enctype="multipart/form-data">
 
         <div class="form-group">
             <label for="name">Name :</label>
@@ -52,15 +62,17 @@ include('./assets/php/connect.php');
             </select>
             <span class="error"><?php echo $concernsError; ?></span>
         </div>
+        <br>
         <div class="form-group">
             <label for="description">Description :</label>
+            <br>
             <textarea id="description" name="description" rows="5" cols="40" required><?php echo $description; ?></textarea>
             <span class="error"><?php echo $descriptionError; ?></span>
         </div>
         <br>
         <div class="form-group">
             <label for="file">File :</label>
-            <input type="file" id="file" name="file" value="<?php echo $file; ?>" required>
+            <input type="file" id="file" name="file" value="<?php echo $file; ?>">
             <span class="error"><?php echo $fileError; ?></span>
         </div>
         <br>
