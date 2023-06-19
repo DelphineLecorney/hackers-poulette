@@ -20,7 +20,13 @@ header {
 main {
     overflow-y: auto;
 }
+// .error {
 
+// }
+&:focus {
+    outline: 3px solid #2E1BA6;
+    border-color: transparent;
+  }
 footer {
     background-color: #f2f2f2;
     padding: 20px;

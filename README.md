@@ -9,6 +9,7 @@
 
 > [Variables, GET, POST](https://www.php.net/manual/fr/language.variables.external.php)
 > [error message](http://uxmas.com/2012/the-4-hs-of-writing-error-messages)
+> [Accesible Form](https://formspree.io/blog/accessible-forms/)
 > [Form](https://www.php.net/manual/fr/tutorial.forms.php)
 > [empty](https://www.php.net/manual/en/function.empty.php)
 > [Post, Enctype](https://developer.mozilla.org/fr/docs/Learn/Forms/Sending_and_retrieving_form_data)
@@ -29,9 +30,13 @@
 
 ## Some explanations
 
-CheckData :
+checkData() :
 
 * trim($data) : Removes spaces from a string.
-* htmlspecialchars($data) : Converts special characters into HTML entities
+* htmlspecialchars($data) : Converts special characters into HTML entities.
+
+strlen() :
+
+* returns the number of characters in a string.
 
 
