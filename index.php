@@ -13,8 +13,16 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
     } else {
         $name = checkData($_POST['name']);
     }
-}
+    if (empty($_POST['firstname'])) {
+        $firstnameError = 'Please enter your firstname';
+    } else if (strlen($_POST['firstname']) < 2 || strlen($_POST['firstname']) > 255) {
+    $firstnameError = 'Your name must be between 2 and 255 characters';
+    } else {
+    $firstname = test_input($_POST['firstname']);
+    }
+    
 
+}
 
 function checkData($data) {
     $data = trim($data);
