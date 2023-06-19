@@ -1,11 +1,10 @@
 <?php
 include('./assets/php/connect.php');
 
-$nameError = $firstnameError = $addressEmailError = $confirmAddressEmailError = $concernsError = $descriptionError = $fileError = '';
-
-$name = $firstname = $addressEmail = $confirmAddressEmail = $concerns = $description = '';
-
+$nameError = $firstnameError = $addressEmailError = $confirmAddressEmailError = $concernsError = $descriptionError = $filesError = '';
+$name = $firstname = $addressEmail = $confirmAddressEmail = $concerns = $description = $files = '';
 $optionsConcerns = ['after-sales-service', 'billing', 'others'];
+
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (empty($_POST['name'])) {
@@ -58,9 +57,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if(empty($_POST['description'])) {
         $descriptionError = 'Please enter a descirption';
     } elseif(strlen($_POST['description']) < 2 || strlen($_POST['description']) > 1000) {
+        $descriptionError = 'Your description must be between 2 and 1000 characters';
+    } else {
         $description = checkData($_POST['description']);
     }
 
+    if(!empty($_FILES['file']['name'])) {
+        $optionsExtensions = ['jpg', 'png', 'gif'];
+        $fileExtension = strtolower(pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION));
+        $fileSize = 2 * 1024 * 1024;
+
+        if(!in_array($fileExtension, $optionsExtensions)) {
+            $fileError = "Your file isn't valid, only JPG, PNG or GIF files are allowed";
+        } elseif ($_FILES['file']['size'] > $fileSize) {
+            $fileError = 'Your file must not exceed 2MB';
+        } else {
+            $fileName = $_FILES["file"]["name"];
+            $request = "INSERT INTO files (filename) VALUES ('$fileName')";
+            $statement =  $bdd -> prepare($request);
+            $statement -> bindParam(':files', $fileName);
+            $statement -> execute();
+        }
+    }
 }
 
 function checkData($data)
@@ -136,9 +154,9 @@ function checkData($data)
         </div>
         <br>
         <div class="form-group">
-            <label for="file">File :</label>
-            <input type="file" id="file" name="file" value="<?php echo $file; ?>">
-            <span class="error"><?php echo $fileError; ?></span>
+            <label for="files">Files :</label>
+            <input type="files" id="files" name="files" value="<?php echo $files; ?>">
+            <span class="error"><?php echo $filesError; ?></span>
         </div>
         <br>
 
