@@ -5,6 +5,8 @@ $nameError = $firstnameError = $addressEmailError = $confirmAddressEmailError = 
 
 $name = $firstname = $addressEmail = $confirmAddressEmail = $concerns = $description = '';
 
+$optionsConcerns = ['after-sales-service', 'billing', 'others'];
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (empty($_POST['name'])) {
         $nameError = 'Please enter your name';
@@ -40,11 +42,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($addressEmail !== $confirmAddressEmail) {
         $confirmAddressEmailError = "Email confirmation doesn't match";
     }
+
+    if(empty($_POST['concerns'])) {
+        $concernsError = 'Please select a concern';
+    }else {
+        $selectedConcern = checkData($_POST['concerns']);
+
+        if(!in_array($selectedConcern, $optionsConcerns)) {
+            $concernsError = 'The selected is incorrect';
+        }else{
+            $concerns = $selectedConcern;
+        }
+    }
+
 }
 
 function checkData($data) {
     $data = trim($data);
-    $data = stripslashes($data);
     $data = htmlspecialchars($data);
     return $data;
 }
