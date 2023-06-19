@@ -55,6 +55,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
 
+    if(empty($_POST['description'])) {
+        $descriptionError = 'Please enter a descirption';
+    }else if(strlen($_POST['description']) < 2 || strlen($_POST['description']) > 1000) {
+        $description = checkData($_POST['description']);
+    }
 }
 
 function checkData($data) {
