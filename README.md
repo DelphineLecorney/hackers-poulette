@@ -32,15 +32,4 @@
 * Once the form is validated, the data should be send to the database.
 * Spam prevention using honeypot or captcha
 
-## Some explanations
-
-checkData() :
-
-* trim($data) : Removes spaces from a string.
-* htmlspecialchars($data) : Converts special characters into HTML entities.
-
-strlen() :
-
-* returns the number of characters in a string.
-
 
