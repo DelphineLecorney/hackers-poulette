@@ -95,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $statement->bindParam(':fileName', $fileName);
             $statement->execute();
         }
-    
+        
         if (!empty($_POST['honeypot'])) {
             die('Please try again.');
         }
