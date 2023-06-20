@@ -5,6 +5,8 @@
 > Create a fully-functioning online"contact support" form  in PHP.
 > It must display a contact form and process the received answer (sanitize, validate, answer the user).
 
+\[ ![Form contact support](https://github.com/DelphineLecorney/hackers-poulette/blob/main/assets/pictures/Form.jpg "Form contact support")
+
 ## References
 
 > [Variables, GET, POST](https://www.php.net/manual/fr/language.variables.external.php)
