@@ -1,6 +1,7 @@
 @import './reset.css';
 body {
   display: grid;
+  place-items: center;
   grid-template-rows: auto 1fr auto;
   min-height: 100vh;
 }
@@ -9,6 +10,7 @@ header {
   background-color: #f2f2f2;
   padding: 20px;
   text-align: center;
+  width: 100%;
 }
 
 main {
@@ -17,6 +19,10 @@ main {
   grid-template-rows: auto 1fr auto;
   grid-row-gap: 10px;
   justify-content: center;
+  top: 10px;
+  border: 1px solid #000 solid #000;
+  border-radius: 5px;
+  padding: 20px;
 }
 
 .form-group {
@@ -24,12 +30,21 @@ main {
   grid-template-columns: auto 1fr;
   align-items: center;
   grid-column-gap: 10px;
+  margin-bottom: 10px;
+}
+
+label {
+  margin-bottom: 5px;
 }
 
 input,
 textarea,
 select {
   grid-row: 2;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #000;
+  border-radius: 5px;
 }
 
 span.error {
@@ -40,14 +55,14 @@ span.error {
 
 input:focus,
 textarea:focus {
-  outline: 3px solid #171717;
+  outline: 2px solid #171717;
   border-color: transparent;
 }
 
 footer {
   background-color: #f2f2f2;
   padding: 20px;
-  position: fixed;
+  position: sticky;
   bottom: 0;
   left: 0;
   width: 100%;
