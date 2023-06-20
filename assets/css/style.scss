@@ -1,14 +1,10 @@
 @import './reset.css';
 
-html,
-body {
-    height: 100%;
-    margin: 0;
-}
 
 body {
     display: grid;
     grid-template-rows: auto 1fr auto;
+    min-height: 100vh;
 }
 
 header {
@@ -19,18 +15,42 @@ header {
 
 main {
     overflow-y: auto;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    grid-row-gap: 10px;
+    justify-content: center;
 }
-// .error {
 
-// }
-&:focus {
-    outline: 3px solid #2E1BA6;
-    border-color: transparent;
+.form-group {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    grid-column-gap: 10px;
   }
+input,
+textarea,
+select {
+    grid-row: 2;
+}
+
+span.error {
+    color: red;
+    font-size: 14px;
+    grid-row: 3;
+}
+
+
+input:focus,
+textarea:focus {
+    outline: 3px solid #171717;
+    border-color: transparent;
+}
 footer {
     background-color: #f2f2f2;
     padding: 20px;
-    position: sticky;
+    position: fixed;
     bottom: 0;
+    left: 0;
+    width: 100%;
     text-align: center;
 }

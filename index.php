@@ -62,31 +62,58 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $description = checkData($_POST['description']);
     }
 
-    if(!empty($_FILES['file']['name'])) {
+    if (!empty($_FILES['files']['name'])) {
         $optionsExtensions = ['jpg', 'png', 'gif'];
-        $fileExtension = strtolower(pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION));
+        $fileExtension = strtolower(pathinfo($_FILES["files"]["name"], PATHINFO_EXTENSION));
         $fileSize = 2 * 1024 * 1024;
 
-        if(!in_array($fileExtension, $optionsExtensions)) {
-            $fileError = "Your file isn't valid, only JPG, PNG or GIF files are allowed";
-        } elseif ($_FILES['file']['size'] > $fileSize) {
-            $fileError = 'Your file must not exceed 2MB';
+        if (!in_array($fileExtension, $optionsExtensions)) {
+            $filesError = "Your file isn't valid, only JPG, PNG or GIF files are allowed";
+        } elseif ($_FILES['files']['size'] > $fileSize) {
+            $filesError = 'Your file must not exceed 2MB';
         } else {
-            $fileName = $_FILES["file"]["name"];
-            $request = "INSERT INTO files (filename) VALUES ('$fileName')";
-            $statement =  $bdd -> prepare($request);
-            $statement -> bindParam(':files', $fileName);
-            $statement -> execute();
+            $fileName = $_FILES["files"]["name"];
+            move_uploaded_file($_FILES["files"]["tmp_name"], "./assets/uploads/$fileName");
+
+            $request = "INSERT INTO files (filename) VALUES (:fileName)";
+            $statement = $bdd->prepare($request);
+            $statement->bindParam(':fileName', $fileName);
+            $statement->execute();
         }
+
+        if (!empty($_POST['honeypot'])) {
+            die('Please try again.');
+        }
+
     }
+}
+
+if (empty($nameError) && empty($firstnameError) && empty($addressEmailError) &&
+empty($confirmAddressEmailError) && empty($concernsError) && empty($descriptionError) &&
+empty($filesError)
+) {
+
+    $request = "INSERT INTO contact_support (name, firstname, addressEmail, confirmAddressEmail, concerns, description) 
+            VALUES (:name, :firstname, :addressEmail, :confirmAddressEmail, :concerns, :description)";
+    $statement = $bdd->prepare($request);
+    $statement->bindParam(':name', $name);
+    $statement->bindParam(':firstname', $firstname);
+    $statement->bindParam(':addressEmail', $addressEmail);
+    $statement->bindParam(':confirmAddressEmail', $confirmAddressEmail);
+    $statement->bindParam(':concerns', $concerns);
+    $statement->bindParam(':description', $description);
+    $statement->execute();
+
 }
 
 function checkData($data)
 {
     $data = trim($data);
+    $data = stripslashes($data);
     $data = htmlspecialchars($data);
     return $data;
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -110,6 +137,7 @@ function checkData($data)
             <input type="text" id="name" name="name" value="<?php echo $name; ?>" placeholder="ex. Dupont" required>
             <span class="error"><?php echo $nameError; ?></span>
         </div>
+
         <br>
         <div class="form-group">
             <label for="firstname">Firstname :</label>
@@ -124,7 +152,7 @@ function checkData($data)
         </div>
         <br>
         <div class="form-group">
-            <label for="confirmAddressEmail">confirmAddressEmail :</label>
+            <label for="confirmAddressEmail">Confirm address e-mail :</label>
             <input type="email" id="confirmAddressEmail" name="confirmAddressEmail" value="<?php echo $confirmAddressEmail; ?>" placeholder="ex. leon.dupont@example.com" required>
             <span class="error"><?php echo $confirmAddressEmailError; ?></span>
         </div>
@@ -155,10 +183,14 @@ function checkData($data)
         <br>
         <div class="form-group">
             <label for="files">Files :</label>
-            <input type="files" id="files" name="files" value="<?php echo $files; ?>">
+            <input type="file" id="files" name="files" value="<?php echo $files; ?>">
             <span class="error"><?php echo $filesError; ?></span>
         </div>
         <br>
+        <div style="display:none">
+            <label for="honeypot">Leave this field blank:</label>
+            <input type="text" id="honeypot" name="honeypot">
+        </div>
 
         <input type="submit" name="submit" value="Submit">
 
