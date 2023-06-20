@@ -1,4 +1,5 @@
 <?php
+
 function checkData($data)
 {
     $data = trim($data);

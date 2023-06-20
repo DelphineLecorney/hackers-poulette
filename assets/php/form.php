@@ -1,5 +1,6 @@
 <?php
-include('./assets/php/connect.php');
+include('connect.php');
+include('validation.php');
 
 $nameError = $firstnameError = $addressEmailError = $confirmAddressEmailError = $concernsError = $descriptionError = $filesError = '';
 $name = $firstname = $addressEmail = $confirmAddressEmail = $concerns = $description = $files = '';
@@ -94,12 +95,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $statement = $bdd->prepare($request);
             $statement->bindParam(':fileName', $fileName);
             $statement->execute();
-        }
-        
+        }      
         if (!empty($_POST['honeypot'])) {
             die('Please try again.');
         }
-    
+
+        require('confirmationEmail.php');
+
+        header("Location: index.php");
+        exit();
     }
     
 }
