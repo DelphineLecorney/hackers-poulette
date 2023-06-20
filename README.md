@@ -32,4 +32,10 @@
 * Once the form is validated, the data should be send to the database.
 * Spam prevention using honeypot or captcha
 
+## Nice-to-have
+
+* Client side validation with JavaScript
+* Work on a good and clear user experience (UX)
+* If all required inputs are valid, the script should respond by email to a given address, confirming the reception of the message. (you can use your own address for testing purposes)
+
 
