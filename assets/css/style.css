@@ -4,6 +4,7 @@ body {
   place-items: center;
   grid-template-rows: auto 1fr auto;
   min-height: 100vh;
+  font-size: 20px;
 }
 
 header {
@@ -11,6 +12,7 @@ header {
   padding: 20px;
   text-align: center;
   width: 100%;
+  font-size: 40px;
 }
 
 main {
@@ -30,7 +32,7 @@ main {
   grid-template-columns: auto 1fr;
   align-items: center;
   grid-column-gap: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 label {

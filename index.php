@@ -4,9 +4,20 @@ include('./assets/php/connect.php');
 $nameError = $firstnameError = $addressEmailError = $confirmAddressEmailError = $concernsError = $descriptionError = $filesError = '';
 $name = $firstname = $addressEmail = $confirmAddressEmail = $concerns = $description = $files = '';
 $optionsConcerns = ['after-sales-service', 'billing', 'others'];
+$fileName = null;
 
+// session_start();
+// $token = bin2hex(random_bytes(32));
+
+// $_SESSION['csrf_token'] = $token;
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // if (empty($_POST['csrf_token']) || !hash_equals($_POST['csrf_token'], $_SESSION['csrf_token'])) {
+    //     die('Invalid CSRF token');
+    // } 
+    if (!empty($nameError)) {
+        echo "nameError: " . $nameError . "<br>";
+    }
     if (empty($_POST['name'])) {
         $nameError = 'Please enter your name';
     } elseif (strlen($_POST['name']) < 2 || strlen($_POST['name']) > 255) {
@@ -66,26 +77,31 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $optionsExtensions = ['jpg', 'png', 'gif'];
         $fileExtension = strtolower(pathinfo($_FILES["files"]["name"], PATHINFO_EXTENSION));
         $fileSize = 2 * 1024 * 1024;
-
-        if (!in_array($fileExtension, $optionsExtensions)) {
+    
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+        $fileMimeType = $finfo->file($_FILES['files']['tmp_name']);
+        $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif'];
+    
+        if (!in_array($fileMimeType, $allowedMimeTypes)) {
             $filesError = "Your file isn't valid, only JPG, PNG or GIF files are allowed";
         } elseif ($_FILES['files']['size'] > $fileSize) {
             $filesError = 'Your file must not exceed 2MB';
         } else {
             $fileName = $_FILES["files"]["name"];
             move_uploaded_file($_FILES["files"]["tmp_name"], "./assets/uploads/$fileName");
-
+    
             $request = "INSERT INTO files (filename) VALUES (:fileName)";
             $statement = $bdd->prepare($request);
             $statement->bindParam(':fileName', $fileName);
             $statement->execute();
         }
-
+    
         if (!empty($_POST['honeypot'])) {
             die('Please try again.');
         }
-
+    
     }
+    
 }
 
 if (empty($nameError) && empty($firstnameError) && empty($addressEmailError) &&
@@ -93,16 +109,17 @@ empty($confirmAddressEmailError) && empty($concernsError) && empty($descriptionE
 empty($filesError)
 ) {
 
-    $request = "INSERT INTO contact_support (name, firstname, addressEmail, confirmAddressEmail, concerns, description) 
-            VALUES (:name, :firstname, :addressEmail, :confirmAddressEmail, :concerns, :description)";
-    $statement = $bdd->prepare($request);
-    $statement->bindParam(':name', $name);
-    $statement->bindParam(':firstname', $firstname);
-    $statement->bindParam(':addressEmail', $addressEmail);
-    $statement->bindParam(':confirmAddressEmail', $confirmAddressEmail);
-    $statement->bindParam(':concerns', $concerns);
-    $statement->bindParam(':description', $description);
-    $statement->execute();
+$request = "INSERT INTO contact_support (name, firstname, addressEmail, confirmAddressEmail, concerns, description, filename) 
+            VALUES (:name, :firstname, :addressEmail, :confirmAddressEmail, :concerns, :description, :filename)";
+$statement = $bdd->prepare($request);
+$statement->bindParam(':name', $name);
+$statement->bindParam(':firstname', $firstname);
+$statement->bindParam(':addressEmail', $addressEmail);
+$statement->bindParam(':confirmAddressEmail', $confirmAddressEmail);
+$statement->bindParam(':concerns', $concerns);
+$statement->bindParam(':description', $description);
+$statement->bindParam(':filename', $fileName);
+$statement->execute();
 
 }
 
@@ -122,6 +139,7 @@ function checkData($data)
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./assets/css/style.css">
+    <script src="./assets/js/script.js"></script>
     <title>Contact Support</title>
 </head>
 <body>
@@ -130,11 +148,13 @@ function checkData($data)
     </header>
 
     <main>
-    <form id="AddData" method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" enctype="multipart/form-data">
+    <form id="AddData" method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" enctype="multipart/form-data" onsubmit="return validateForm(event)">
+
+    <!-- <input type="hidden" name="csrf_token" value="<?php echo $token; ?>"> -->
 
         <div class="form-group">
             <label for="name">Name :</label>
-            <input type="text" id="name" name="name" value="<?php echo $name; ?>" placeholder="ex. Dupont" required>
+            <input type="text" id="name" name="name" value="<?php echo htmlspecialchars($name); ?>" placeholder="ex. Dupont" required>
             <span class="error"><?php echo $nameError; ?></span>
         </div>
 
@@ -147,7 +167,7 @@ function checkData($data)
         <br>
         <div class="form-group">
             <label for="addressEmail">Address e-mail :</label>
-            <input type="email" id="addressEmail" name="addressEmail" value="<?php echo $addressEmail; ?>" placeholder="ex. leon.dupont@example.com" required>
+            <input type="email" id="addressEmail" name="addressEmail" value="<?php echo htmlspecialchars($addressEmail); ?>" placeholder="ex. leon.dupont@example.com" required>
             <span class="error"><?php echo $addressEmailError; ?></span>
         </div>
         <br>
@@ -196,6 +216,7 @@ function checkData($data)
 
     </form>
 </main>
+
     <footer>
         &copy; <?php echo date("Y"); ?> Hackers Poulette &#8482;
     </footer>
