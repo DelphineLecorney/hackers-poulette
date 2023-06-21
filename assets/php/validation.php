@@ -7,3 +7,4 @@ function checkData($data)
     $data = htmlspecialchars($data);
     return $data;
 }
+?>

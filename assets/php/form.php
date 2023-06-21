@@ -1,21 +1,30 @@
 <?php
+session_start();
+
 include('connect.php');
-include('validation.php');
+require_once('validation.php');
+
+
 
 $nameError = $firstnameError = $addressEmailError = $confirmAddressEmailError = $concernsError = $descriptionError = $filesError = '';
 $name = $firstname = $addressEmail = $confirmAddressEmail = $concerns = $description = $files = '';
 $optionsConcerns = ['after-sales-service', 'billing', 'others'];
 $fileName = null;
 
-// session_start();
-// $token = bin2hex(random_bytes(32));
+if (!isset($_SESSION['csrf_token'])) {
+    $token = bin2hex(random_bytes(32));
+    $_SESSION['csrf_token'] = $token;
+} else {
+    $token = $_SESSION['csrf_token'];
+}
 
-// $_SESSION['csrf_token'] = $token;
+
+
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // if (empty($_POST['csrf_token']) || !hash_equals($_POST['csrf_token'], $_SESSION['csrf_token'])) {
-    //     die('Invalid CSRF token');
-    // } 
+    if (empty($_POST['csrf_token']) || !hash_equals($_POST['csrf_token'], $_SESSION['csrf_token'])) {
+        die('Invalid CSRF token');
+    }
     if (!empty($nameError)) {
         echo "nameError: " . $nameError . "<br>";
     }
@@ -37,21 +46,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if (empty($_POST['addressEmail'])) {
         $addressEmailError = 'Please enter your email';
-    } elseif (!filter_var($_POST['addressEmail'], FILTER_VALIDATE_EMAIL)) {
-        $addressEmailError = "Your email format isn't valid";
+    } elseif (empty($_POST['addressEmail']) || !filter_var($_POST['addressEmail'], FILTER_VALIDATE_EMAIL)) {
+        $addressEmailError = 'Please enter a valid email address';
     } else {
         $addressEmail = checkData($_POST['addressEmail']);
     }
 
-    if (empty($_POST['confirmAddressEmail'])) {
-        $confirmAddressEmailError = 'Please confirm your email';
-    } elseif (!filter_var($_POST['confirmAddressEmail'], FILTER_VALIDATE_EMAIL)) {
-        $confirmAddressEmailError = "Your email format isn't valid";
+    if (empty($_POST['confirmAddressEmail']) || !filter_var($_POST['confirmAddressEmail'], FILTER_VALIDATE_EMAIL)) {
+        $confirmAddressEmailError = 'Please enter a valid email address';
     } else {
         $confirmAddressEmail = checkData($_POST['confirmAddressEmail']);
-    }
-    if ($addressEmail !== $confirmAddressEmail) {
-        $confirmAddressEmailError = "Email confirmation doesn't match";
     }
 
     if(empty($_POST['concerns'])) {
@@ -64,67 +68,68 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         } else {
             $concerns = $selectedConcern;
         }
-    }
-
-    if(empty($_POST['description'])) {
-        $descriptionError = 'Please enter a descirption';
-    } elseif(strlen($_POST['description']) < 2 || strlen($_POST['description']) > 1000) {
-        $descriptionError = 'Your description must be between 2 and 1000 characters';
-    } else {
-        $description = checkData($_POST['description']);
-    }
-
-    if (!empty($_FILES['files']['name'])) {
-        $optionsExtensions = ['jpg', 'png', 'gif'];
-        $fileExtension = strtolower(pathinfo($_FILES["files"]["name"], PATHINFO_EXTENSION));
-        $fileSize = 2 * 1024 * 1024;
-    
-        $finfo = new finfo(FILEINFO_MIME_TYPE);
-        $fileMimeType = $finfo->file($_FILES['files']['tmp_name']);
-        $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif'];
-    
-        if (!in_array($fileMimeType, $allowedMimeTypes)) {
-            $filesError = "Your file isn't valid, only JPG, PNG or GIF files are allowed";
-        } elseif ($_FILES['files']['size'] > $fileSize) {
-            $filesError = 'Your file must not exceed 2MB';
+        if(empty($_POST['description'])) {
+            $descriptionError = 'Please enter a descirption';
+        } elseif(strlen($_POST['description']) < 2 || strlen($_POST['description']) > 1000) {
+            $descriptionError = 'Your description must be between 2 and 1000 characters';
         } else {
-            $fileName = $_FILES["files"]["name"];
-            move_uploaded_file($_FILES["files"]["tmp_name"], "./assets/uploads/$fileName");
-    
-            $request = "INSERT INTO files (filename) VALUES (:fileName)";
-            $statement = $bdd->prepare($request);
-            $statement->bindParam(':fileName', $fileName);
-            $statement->execute();
-        }      
-        if (!empty($_POST['honeypot'])) {
-            die('Please try again.');
+            $description = checkData($_POST['description']);
         }
 
-        require('confirmationEmail.php');
+        if (!empty($_FILES['files']['name'])) {
+            $optionsExtensions = ['jpg', 'png', 'gif'];
+            $fileExtension = strtolower(pathinfo($_FILES["files"]["name"], PATHINFO_EXTENSION));
+            $fileSize = 2 * 1024 * 1024;
 
-        header("Location: index.php");
-        exit();
+            $finfo = new finfo(FILEINFO_MIME_TYPE);
+            $fileMimeType = $finfo->file($_FILES['files']['tmp_name']);
+            $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif'];
+
+            if (!in_array($fileMimeType, $allowedMimeTypes)) {
+                $filesError = "Your file isn't valid, only JPG, PNG or GIF files are allowed";
+            } elseif ($_FILES['files']['size'] > $fileSize) {
+                $filesError = 'Your file must not exceed 2MB';
+            } else {
+                $fileName = $_FILES["files"]["name"];
+                move_uploaded_file($_FILES["files"]["tmp_name"], "./assets/uploads/$fileName");
+
+                $request = "INSERT INTO files (filename) VALUES (:fileName)";
+                $statement = $bdd->prepare($request);
+                $statement->bindParam(':fileName', $fileName);
+                $statement->execute();
+            }
+            if (!empty($_POST['honeypot'])) {
+                die('Please try again.');
+            }
+
+            header("Location: index.php");
+            exit();
+        }
     }
-    
+
+
 }
 
 if (empty($nameError) && empty($firstnameError) && empty($addressEmailError) &&
 empty($confirmAddressEmailError) && empty($concernsError) && empty($descriptionError) &&
 empty($filesError)
 ) {
-
-$request = "INSERT INTO contact_support (name, firstname, addressEmail, confirmAddressEmail, concerns, description, filename) 
+    if (!empty($name) && !empty($firstname) && !empty($addressEmail) &&
+    !empty($confirmAddressEmail) && !empty($concerns) && !empty($description)
+    ) {
+        $request = "INSERT INTO contact_support (name, firstname, addressEmail, confirmAddressEmail, concerns, description, filename) 
             VALUES (:name, :firstname, :addressEmail, :confirmAddressEmail, :concerns, :description, :filename)";
-$statement = $bdd->prepare($request);
-$statement->bindParam(':name', $name);
-$statement->bindParam(':firstname', $firstname);
-$statement->bindParam(':addressEmail', $addressEmail);
-$statement->bindParam(':confirmAddressEmail', $confirmAddressEmail);
-$statement->bindParam(':concerns', $concerns);
-$statement->bindParam(':description', $description);
-$statement->bindParam(':filename', $fileName);
-$statement->execute();
+        $statement = $bdd->prepare($request);
+        $statement->bindParam(':name', $name);
+        $statement->bindParam(':firstname', $firstname);
+        $statement->bindParam(':addressEmail', $addressEmail);
+        $statement->bindParam(':confirmAddressEmail', $confirmAddressEmail);
+        $statement->bindParam(':concerns', $concerns);
+        $statement->bindParam(':description', $description);
+        $statement->bindParam(':filename', $fileName);
+        $statement->execute();
 
+    }
 }
 
 ?>
@@ -133,7 +138,8 @@ $statement->execute();
     <main>
     <form id="AddData" method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" enctype="multipart/form-data" onsubmit="return validateForm(event)">
 
-    <!-- <input type="hidden" name="csrf_token" value="<?php echo $token; ?>"> -->
+    <input type="hidden" name="csrf_token" value="<?php echo $token; ?>">
+
 
         <div class="form-group">
             <label for="name">Name :</label>
@@ -199,3 +205,4 @@ $statement->execute();
 
     </form>
 </main>
+<script src="./assets/js/script.js"></script>
