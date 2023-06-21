@@ -1,15 +1,14 @@
+
 <?php
-session_start();
 
 include('connect.php');
 require_once('validation.php');
-
-
 
 $nameError = $firstnameError = $addressEmailError = $confirmAddressEmailError = $concernsError = $descriptionError = $filesError = '';
 $name = $firstname = $addressEmail = $confirmAddressEmail = $concerns = $description = $files = '';
 $optionsConcerns = ['after-sales-service', 'billing', 'others'];
 $fileName = null;
+$myEmail = 'lecorney.delphine@gmail.com';
 
 if (!isset($_SESSION['csrf_token'])) {
     $token = bin2hex(random_bytes(32));
@@ -17,9 +16,6 @@ if (!isset($_SESSION['csrf_token'])) {
 } else {
     $token = $_SESSION['csrf_token'];
 }
-
-
-
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (empty($_POST['csrf_token']) || !hash_equals($_POST['csrf_token'], $_SESSION['csrf_token'])) {
@@ -114,6 +110,7 @@ if (empty($nameError) && empty($firstnameError) && empty($addressEmailError) &&
 empty($confirmAddressEmailError) && empty($concernsError) && empty($descriptionError) &&
 empty($filesError)
 ) {
+
     if (!empty($name) && !empty($firstname) && !empty($addressEmail) &&
     !empty($confirmAddressEmail) && !empty($concerns) && !empty($description)
     ) {
