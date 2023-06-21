@@ -69,4 +69,8 @@ footer {
   left: 0;
   width: 100%;
   text-align: center;
+}
+
+.display-token {
+  display: none;
 }/*# sourceMappingURL=style.css.map */

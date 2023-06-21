@@ -3,6 +3,7 @@
 
 include('connect.php');
 require_once('validation.php');
+require ('rakitValidator.php');
 
 $nameError = $firstnameError = $addressEmailError = $confirmAddressEmailError = $concernsError = $descriptionError = $filesError = '';
 $name = $firstname = $addressEmail = $confirmAddressEmail = $concerns = $description = $files = '';
@@ -19,58 +20,50 @@ if (!isset($_SESSION['csrf_token'])) {
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (empty($_POST['csrf_token']) || !hash_equals($_POST['csrf_token'], $_SESSION['csrf_token'])) {
-        die('Invalid CSRF token');
+        die("An error has occurred. Please try again later.");
     }
-    if (!empty($nameError)) {
-        echo "nameError: " . $nameError . "<br>";
-    }
-    if (empty($_POST['name'])) {
-        $nameError = 'Please enter your name';
-    } elseif (strlen($_POST['name']) < 2 || strlen($_POST['name']) > 255) {
-        $nameError = 'Your name must be between 2 and 255 characters';
+    
+    $validator = new \Rakit\Validation\Validator;
+
+    $validation = $validator->make($_POST, [
+        'name' => 'required|min:2|max:255',
+        'firstname' => 'required|min:2|max:255',
+        'addressEmail' => 'required|email',
+        'confirmAddressEmail' => 'required|email',
+        'concerns' => 'required',
+        'description' => 'required|min:2|max:1000',
+        'files' => 'uploaded_file:0,2097152,image/jpeg,image/png,image/gif',
+    ]);
+
+    $validation->setAliases([
+        'name' => 'Name',
+        'firstname' => 'Firstname',
+        'addressEmail' => 'Address e-mail',
+        'confirmAddressEmail' => 'Confirm address e-mail',
+        'concerns' => 'Concerns',
+        'description' => 'Description',
+        'files' => 'Files',
+    ]);
+
+    $validation->validate();
+
+    if ($validation->fails()) {
+        $errors = $validation->errors();
+
+        $nameError = $errors->firstOfAll()['name'][0] ?? '';
+        $firstnameError = $errors->firstOfAll()['firstname'][0] ?? '';
+        $addressEmailError = $errors->firstOfAll()['addressEmail'][0] ?? '';
+        $confirmAddressEmailError = $errors->firstOfAll()['confirmAddressEmail'][0] ?? '';
+        $concernsError = $errors->firstOfAll()['concerns'][0] ?? '';
+        $descriptionError = $errors->firstOfAll()['description'][0] ?? '';
+        $filesError = $errors->firstOfAll()['files'][0] ?? '';
     } else {
         $name = checkData($_POST['name']);
-    }
-
-    if (empty($_POST['firstname'])) {
-        $firstnameError = 'Please enter your firstname';
-    } elseif (strlen($_POST['firstname']) < 2 || strlen($_POST['firstname']) > 255) {
-        $firstnameError = 'Your firstname must be between 2 and 255 characters';
-    } else {
         $firstname = checkData($_POST['firstname']);
-    }
-
-    if (empty($_POST['addressEmail'])) {
-        $addressEmailError = 'Please enter your email';
-    } elseif (empty($_POST['addressEmail']) || !filter_var($_POST['addressEmail'], FILTER_VALIDATE_EMAIL)) {
-        $addressEmailError = 'Please enter a valid email address';
-    } else {
         $addressEmail = checkData($_POST['addressEmail']);
-    }
-
-    if (empty($_POST['confirmAddressEmail']) || !filter_var($_POST['confirmAddressEmail'], FILTER_VALIDATE_EMAIL)) {
-        $confirmAddressEmailError = 'Please enter a valid email address';
-    } else {
         $confirmAddressEmail = checkData($_POST['confirmAddressEmail']);
-    }
-
-    if(empty($_POST['concerns'])) {
-        $concernsError = 'Please select a concern';
-    } else {
-        $selectedConcern = checkData($_POST['concerns']);
-
-        if(!in_array($selectedConcern, $optionsConcerns)) {
-            $concernsError = 'The selected is incorrect';
-        } else {
-            $concerns = $selectedConcern;
-        }
-        if(empty($_POST['description'])) {
-            $descriptionError = 'Please enter a descirption';
-        } elseif(strlen($_POST['description']) < 2 || strlen($_POST['description']) > 1000) {
-            $descriptionError = 'Your description must be between 2 and 1000 characters';
-        } else {
-            $description = checkData($_POST['description']);
-        }
+        $concerns = checkData($_POST['concerns']);
+        $description = checkData($_POST['description']);
 
         if (!empty($_FILES['files']['name'])) {
             $optionsExtensions = ['jpg', 'png', 'gif'];
@@ -102,8 +95,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             exit();
         }
     }
-
-
 }
 
 if (empty($nameError) && empty($firstnameError) && empty($addressEmailError) &&
@@ -128,7 +119,6 @@ empty($filesError)
 
     }
 }
-
 ?>
 
 
@@ -193,7 +183,7 @@ empty($filesError)
             <span class="error"><?php echo $filesError; ?></span>
         </div>
         <br>
-        <div style="display:none">
+        <div class="display-token">
             <label for="honeypot">Leave this field blank:</label>
             <input type="text" id="honeypot" name="honeypot">
         </div>

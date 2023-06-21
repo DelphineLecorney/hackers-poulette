@@ -65,4 +65,7 @@ function validateForm(event) {
     }
 }
 
-document.getElementById('AddData').addEventListener('submit', validateForm);
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('AddData').addEventListener('submit', validateForm);
+});
+

@@ -1,0 +1,6 @@
+{
+    "require": {
+      "rakit/validation": "^1.0"
+    }
+  }
+  
