@@ -87,8 +87,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $statement = $bdd->prepare($request);
                 $statement->bindParam(':fileName', $fileName);
                 $statement->execute();
+                
             }
-            $transport = new Swift_SmtpTransport('smtp-relay.sendinblue.com', 587);
+
+            if (!empty($_POST['honeypot'])) {
+                die('Please try again.');
+            }
+
+            header("Location: index.php");
+            exit();
+        }
+        
+        $transport = new Swift_SmtpTransport('smtp-relay.sendinblue.com', 587);
             $transport->setUsername('lecorney.delphine@gmail.com');
             $transport->setPassword('khJ14YdLn7rptV0G');
     
@@ -100,14 +110,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $message->setBody("Thank you for contacting us! We've received your request.");
     
             $result = $mailer->send($message);
-
-            if (!empty($_POST['honeypot'])) {
-                die('Please try again.');
-            }
-
-            header("Location: index.php");
-            exit();
-        }
     }
 }
 
@@ -212,4 +214,4 @@ if (empty($nameError) && empty($firstnameError) && empty($addressEmailError) && 
     <br>
 <?php endif; ?>
 
-<script src="./assets/js/script.js"></script>
+<script src="script.js"></script>
