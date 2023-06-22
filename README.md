@@ -47,7 +47,9 @@
 * This script uses the following dependencies:
 * Rakit Validator: A validation library for PHP. Make sure to properly include it in your project.
 * SwiftMailer: A library for sending emails in PHP. Make sure to include the required files and install the library via Composer.
-* Usage
+  
+## Usage
+
 * Place the PHP file in your project, ensuring that the required dependencies are properly included.
 
 
