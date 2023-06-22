@@ -1,5 +1,5 @@
 <div align="center">
-<a href="">
+<a href="<https://github.com/DelphineLecorney/hackers-poulette/blob/main/assets/pictures/LogoPoulette.jpg>">
 <img src="images/logo.png" alt="Logo" width="80" height="80">
 </a>
 </div>
