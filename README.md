@@ -1,41 +1,54 @@
+<div align="center">
+<a href="">
+<img src="images/logo.png" alt="Logo" width="80" height="80">
+</a>
+</div>
+
 # Hackers Poulette
 
 ## Objectives
 
-> Create a fully-functioning online"contact support" form  in PHP.
-> It must display a contact form and process the received answer (sanitize, validate, answer the user).
+> This PHP script is designed to handle a customer support form. It collects information such as name, email address, concerns, description, and also allows for optional file upload.
 
-[Page contact form](https://contacthelpform.000webhostapp.com/index.php)
+[Site Contact Support](https://contacthelpform.000webhostapp.com/index.php)
 
  ![Form contact](https://github.com/DelphineLecorney/hackers-poulette/blob/main/assets/pictures/Form.jpg "Form contact")
 
 ## References
 
 > [Variables, GET, POST](https://www.php.net/manual/fr/language.variables.external.php)
+>
 > [error message](http://uxmas.com/2012/the-4-hs-of-writing-error-messages)
 > [Accesible Form](https://formspree.io/blog/accessible-forms/)
+>
 > [Form](https://www.php.net/manual/fr/tutorial.forms.php)
+>
 > [empty](https://www.php.net/manual/en/function.empty.php)
+>
 > [Post, Enctype](https://developer.mozilla.org/fr/docs/Learn/Forms/Sending_and_retrieving_form_data)
+>
 > [ChekData](https://www.w3schools.com/php/php_form_validation.asp)
+>
 > [Form security and validation in PHP](https://www.pierre-giraud.com/php-mysql-apprendre-coder-cours/securiser-valider-formulaire/)
+>
 > [class mailer](https://github.com/PHPMailer/PHPMailer)
 
-## Must-have features
+## Features
 
-* Use of PHP
-* Database with PDO connection
-* The form's html code must be semantically valid and accessible
-* In case of wrong input, the form should display a useful visual clue about the error, 	below the input field.
-* The error message must be readable and helpful to users.
-* The data has to be sanitised and validated (server side)
-* Once the form is validated, the data should be send to the database.
-* Spam prevention using honeypot or captcha
+* Validation of user-entered data, including form validation, CSRF protection, and rule-based validation for each field.
+* Sanitization of data to prevent injection attacks.
+* File upload handling with size and file type verification.
+* Sending a confirmation email to the customer using the SwiftMailer library.
+* Storing the data in a database.
+* Configuration
+* Before using this script, make sure to configure the following:
 
-## Nice-to-have
+## Dependencies
 
-* Client side validation with JavaScript
-* Work on a good and clear user experience (UX)
-* If all required inputs are valid, the script should respond by email to a given address, confirming the reception of the message. (you can use your own address for testing purposes)
+* This script uses the following dependencies:
+* Rakit Validator: A validation library for PHP. Make sure to properly include it in your project.
+* SwiftMailer: A library for sending emails in PHP. Make sure to include the required files and install the library via Composer.
+* Usage
+* Place the PHP file in your project, ensuring that the required dependencies are properly included.
 
 
