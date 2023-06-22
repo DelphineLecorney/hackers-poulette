@@ -1,4 +1,4 @@
- ![Hackers Poulette](https://github.com/DelphineLecorney/hackers-poulette/blob/main/assets/pictures/LogoPoulette.jpg)
+[ ![Hackers Poulette](https://github.com/DelphineLecorney/hackers-poulette/blob/main/assets/pictures/LogoPoulette.jpg)](https://github.com/DelphineLecorney/hackers-poulette/blob/main/assets/pictures/LogoPoulette.jpg)
 
 # Hackers Poulette
 
