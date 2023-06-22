@@ -1,10 +1,10 @@
-
 <?php
+
 
 include('connect.php');
 require_once('validation.php');
-require ('rakitValidator.php');
-require ('vendor/autoload.php');
+require('rakitValidator.php');
+require('vendor/autoload.php');
 
 $nameError = $firstnameError = $addressEmailError = $confirmAddressEmailError = $concernsError = $descriptionError = $filesError = '';
 $name = $firstname = $addressEmail = $confirmAddressEmail = $concerns = $description = $files = '';
@@ -17,6 +17,8 @@ if (!isset($_SESSION['csrf_token'])) {
 } else {
     $token = $_SESSION['csrf_token'];
 }
+
+$formSubmitted = false;
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (empty($_POST['csrf_token']) || !hash_equals($_POST['csrf_token'], $_SESSION['csrf_token'])) {
@@ -45,8 +47,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         'files' => 'Files',
     ]);
 
-
     $validation->validate();
+    $formSubmitted = true;
 
     if ($validation->fails()) {
         $errors = $validation->errors();
@@ -88,22 +90,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $statement->bindParam(':fileName', $fileName);
                 $statement->execute();
             }
+
             if (!empty($_POST['honeypot'])) {
                 die('Please try again.');
             }
+
             $transport = new Swift_SmtpTransport('smtp-relay.sendinblue.com', 587);
             $transport->setUsername('lecorney.delphine@gmail.com');
             $transport->setPassword('khJ14YdLn7rptV0G');
-        
+
             $mailer = new Swift_Mailer($transport);
-        
+
             $message = new Swift_Message('Confirmation Email');
             $message->setFrom('lecorney.delphine@gmail.com');
-            $message->setTo($addressEmail); 
+            $message->setTo($addressEmail);
             $message->setBody("Thank you for contacting us! We've received your request.");
-        
-            $result = $mailer->send($message);
 
+            $result = $mailer->send($message);
 
             header("Location: index.php");
             exit();
@@ -111,16 +114,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 
-if (empty($nameError) && empty($firstnameError) && empty($addressEmailError) &&
-empty($confirmAddressEmailError) && empty($concernsError) && empty($descriptionError) &&
-empty($filesError)
-) {
-
-    if (!empty($name) && !empty($firstname) && !empty($addressEmail) &&
-    !empty($confirmAddressEmail) && !empty($concerns) && !empty($description)
-    ) {
-        $request = "INSERT INTO contact_support (name, firstname, addressEmail, confirmAddressEmail, concerns, description, filename) 
-            VALUES (:name, :firstname, :addressEmail, :confirmAddressEmail, :concerns, :description, :filename)";
+if (empty($nameError) && empty($firstnameError) && empty($addressEmailError) && empty($confirmAddressEmailError) && empty($concernsError) && empty($descriptionError) && empty($filesError)) {
+    if (!empty($name) && !empty($firstname) && !empty($addressEmail) && !empty($confirmAddressEmail) && !empty($concerns) && !empty($description)) {
+        $request = "INSERT INTO contact_support (name, firstname, addressEmail, confirmAddressEmail, concerns, description, filename) VALUES (:name, :firstname, :addressEmail, :confirmAddressEmail, :concerns, :description, :filename)";
         $statement = $bdd->prepare($request);
         $statement->bindParam(':name', $name);
         $statement->bindParam(':firstname', $firstname);
@@ -135,67 +131,73 @@ empty($filesError)
 ?>
 
 
-    <main>
+<main>
     <form id="AddData" method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" enctype="multipart/form-data" onsubmit="return validateForm(event)">
 
-    <input type="hidden" name="csrf_token" value="<?php echo $token; ?>">
-
+        <input type="hidden" name="csrf_token" value="<?php echo $token; ?>">
 
         <div class="form-group">
-            <label for="name">Name :</label>
+            <label for="name">Name:</label>
             <input type="text" id="name" name="name" value="<?php echo htmlspecialchars($name); ?>" placeholder="ex. Dupont" required>
             <span class="error"><?php echo $nameError; ?></span>
         </div>
 
         <br>
+
         <div class="form-group">
-            <label for="firstname">Firstname :</label>
+            <label for="firstname">Firstname:</label>
             <input type="text" id="firstname" name="firstname" value="<?php echo $firstname; ?>" placeholder="ex. Léon" required>
             <span class="error"><?php echo $firstnameError; ?></span>
         </div>
+
         <br>
+
         <div class="form-group">
-            <label for="addressEmail">Address e-mail :</label>
+            <label for="addressEmail">Address e-mail:</label>
             <input type="email" id="addressEmail" name="addressEmail" value="<?php echo htmlspecialchars($addressEmail); ?>" placeholder="ex. leon.dupont@example.com" required>
             <span class="error"><?php echo $addressEmailError; ?></span>
         </div>
+
         <br>
+
         <div class="form-group">
-            <label for="confirmAddressEmail">Confirm address e-mail :</label>
+            <label for="confirmAddressEmail">Confirm address e-mail:</label>
             <input type="email" id="confirmAddressEmail" name="confirmAddressEmail" value="<?php echo $confirmAddressEmail; ?>" placeholder="ex. leon.dupont@example.com" required>
             <span class="error"><?php echo $confirmAddressEmailError; ?></span>
         </div>
+
         <br>
+
         <div class="form-group">
-            <label for="concerns">Concerns :</label>
+            <label for="concerns">Concerns:</label>
             <select id="concerns" name="concerns" required>
                 <option value="">Select Concern</option>
-                <option value="after-sales-service" <?php if ($concerns === 'after-sales-service') {
-                    echo 'selected';
-                } ?>>After-sales service</option>
-                <option value="billing" <?php if ($concerns === 'billing') {
-                    echo 'selected';
-                } ?>>Billing</option>
-                <option value="others" <?php if ($concerns === 'others') {
-                    echo 'selected';
-                } ?>>Others</option>
+                <option value="after-sales-service" <?php if ($concerns === 'after-sales-service') { echo 'selected'; } ?>>After-sales service</option>
+                <option value="billing" <?php if ($concerns === 'billing') { echo 'selected'; } ?>>Billing</option>
+                <option value="others" <?php if ($concerns === 'others') { echo 'selected'; } ?>>Others</option>
             </select>
             <span class="error"><?php echo $concernsError; ?></span>
         </div>
+
         <br>
+
         <div class="form-group">
-            <label for="description">Description :</label>
+            <label for="description">Description:</label>
             <br><br>
             <textarea id="description" name="description" rows="5" cols="40" placeholder="Detail your concern as much as possible" required><?php echo $description; ?></textarea>
             <span class="error"><?php echo $descriptionError; ?></span>
         </div>
+
         <br>
+
         <div class="form-group">
-            <label for="files">Files :</label>
+            <label for="files">Files:</label>
             <input type="file" id="files" name="files" value="<?php echo $files; ?>">
             <span class="error"><?php echo $filesError; ?></span>
         </div>
+
         <br>
+
         <div class="display-token">
             <label for="honeypot">Leave this field blank:</label>
             <input type="text" id="honeypot" name="honeypot">
@@ -205,4 +207,12 @@ empty($filesError)
 
     </form>
 </main>
+
+<?php if ($formSubmitted): ?>
+    <div class="success-message">
+        Your form has been submitted successfully!
+    </div>
+    <br>
+<?php endif; ?>
+
 <script src="./assets/js/script.js"></script>

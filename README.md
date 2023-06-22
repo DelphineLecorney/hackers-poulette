@@ -1,5 +1,4 @@
-
-[![Hackers Poulette](https://github.com/DelphineLecorney/hackers-poulette/blob/main/assets/pictures/LogoPoulette.jpg)](https://contacthelpform.000webhostapp.com/index.php)
+[   ![Hackers Poulette](https://github.com/DelphineLecorney/hackers-poulette/blob/main/assets/pictures/LogoPoulette.jpg)](https://contacthelpform.000webhostapp.com/index.php)
 
 # Hackers Poulette
 
@@ -8,8 +7,7 @@
 ## Objectives
 
 > This PHP script is designed to handle a customer support form. It collects information such as name, email address, concerns, description, and also allows for optional file upload.
-<br>
-
+> <br>
 
  ![Form contact](https://github.com/DelphineLecorney/hackers-poulette/blob/main/assets/pictures/Form.jpg "Form contact")
 
@@ -47,7 +45,7 @@
 * This script uses the following dependencies:
 * Rakit Validator: A validation library for PHP. Make sure to properly include it in your project.
 * SwiftMailer: A library for sending emails in PHP. Make sure to include the required files and install the library via Composer.
-  
+
 ## Usage
 
 * Place the PHP file in your project, ensuring that the required dependencies are properly included.
