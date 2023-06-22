@@ -1,6 +1,6 @@
 {
     "require": {
-      "rakit/validation": "^1.0"
+      "rakit/validation": "^1.0",
+        "swiftmailer/swiftmailer": "^6.0"
     }
   }
-  

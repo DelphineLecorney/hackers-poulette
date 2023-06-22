@@ -4,12 +4,12 @@
 include('connect.php');
 require_once('validation.php');
 require ('rakitValidator.php');
+require ('vendor/autoload.php');
 
 $nameError = $firstnameError = $addressEmailError = $confirmAddressEmailError = $concernsError = $descriptionError = $filesError = '';
 $name = $firstname = $addressEmail = $confirmAddressEmail = $concerns = $description = $files = '';
 $optionsConcerns = ['after-sales-service', 'billing', 'others'];
 $fileName = null;
-$myEmail = 'lecorney.delphine@gmail.com';
 
 if (!isset($_SESSION['csrf_token'])) {
     $token = bin2hex(random_bytes(32));
@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (empty($_POST['csrf_token']) || !hash_equals($_POST['csrf_token'], $_SESSION['csrf_token'])) {
         die("An error has occurred. Please try again later.");
     }
-    
+
     $validator = new \Rakit\Validation\Validator;
 
     $validation = $validator->make($_POST, [
@@ -44,6 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         'description' => 'Description',
         'files' => 'Files',
     ]);
+
 
     $validation->validate();
 
@@ -90,6 +91,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if (!empty($_POST['honeypot'])) {
                 die('Please try again.');
             }
+            $transport = new Swift_SmtpTransport('smtp-relay.sendinblue.com', 587);
+            $transport->setUsername('lecorney.delphine@gmail.com');
+            $transport->setPassword('khJ14YdLn7rptV0G');
+        
+            $mailer = new Swift_Mailer($transport);
+        
+            $message = new Swift_Message('Confirmation Email');
+            $message->setFrom('lecorney.delphine@gmail.com');
+            $message->setTo($addressEmail); 
+            $message->setBody("Thank you for contacting us! We've received your request.");
+        
+            $result = $mailer->send($message);
+
 
             header("Location: index.php");
             exit();
@@ -116,7 +130,6 @@ empty($filesError)
         $statement->bindParam(':description', $description);
         $statement->bindParam(':filename', $fileName);
         $statement->execute();
-
     }
 }
 ?>
