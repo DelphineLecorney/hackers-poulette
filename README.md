@@ -8,7 +8,7 @@
 ## Objectives
 
 > This PHP script is designed to handle a customer support form. It collects information such as name, email address, concerns, description, and also allows for optional file upload.
-
+<br>
 
 
  ![Form contact](https://github.com/DelphineLecorney/hackers-poulette/blob/main/assets/pictures/Form.jpg "Form contact")
