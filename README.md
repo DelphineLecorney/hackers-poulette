@@ -1,6 +1,9 @@
 <div align="center">
+
+<a href="https://contacthelpform.000webhostapp.com/index.php">
+  <img src="https://github.com/DelphineLecorney/hackers-poulette/blob/main/assets/pictures/LogoPoulette.jpg" alt="Hackers Poulette" width="100px">
+</a>
  
-[   ![Hackers Poulette](https://github.com/DelphineLecorney/hackers-poulette/blob/main/assets/pictures/LogoPoulette.jpg)](https://contacthelpform.000webhostapp.com/index.php)
 
 <br>
 
@@ -75,7 +78,7 @@
 
 * Place the PHP file in your project, ensuring that the required dependencies are properly included.
 
-# 💻 Tech Stack:
+# 💻 Tech Stack :
 
 <p align='left'>
   
@@ -94,8 +97,13 @@
 
 </p>
 
-# Contact me
+# Contact me :
 
-[   ![Hackers Poulette](https://github.com/DelphineLecorney/Template-readme/blob/main/PICTURES_read_me_/linkedin.png)](https://www.linkedin.com/in/delphine-lecorney/)
+<a href="https://www.linkedin.com/in/delphine-lecorney/">
+  <img src="https://github.com/DelphineLecorney/Template-readme/blob/main/PICTURES_read_me_/linkedin.png" alt="Linkedin" width="80px">
+</a>
+
+
+
 
 
