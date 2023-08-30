@@ -11,8 +11,6 @@
 
 <br>
 
-[Site Contact Support](https://contacthelpform.000webhostapp.com/index.php)
-
 </div>
 
 ## Objectives
